@@ -13,7 +13,9 @@ export default function App() {
 
   useEffect(() => {
     async function loadGeoJSON() {
-      const response = await fetch("/data/WSPR_2021.json");
+      const response = await fetch(
+        `${import.meta.env.BASE_URL}data/WSPR_2021.json`,
+      );
       const data = await response.json();
       const voteData = await mergeVotesIntoGeoJson(data);
       // console.log("VOTE DATA", voteData);

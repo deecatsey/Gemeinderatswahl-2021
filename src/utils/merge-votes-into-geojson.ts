@@ -5,7 +5,9 @@ export const mergeVotesIntoGeoJson = async (
   geojson: GeoJSON.FeatureCollection,
 ) => {
   // Load CSV
-  const response = await fetch("/data/GR21Sprengel.csv");
+  const response = await fetch(
+    `${import.meta.env.BASE_URL}data/GR21Sprengel.csv`,
+  );
 
   if (!response.ok) {
     throw new Error(

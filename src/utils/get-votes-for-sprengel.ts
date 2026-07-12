@@ -4,7 +4,9 @@ let rows: Record<string, string>[] | undefined;
 
 async function loadElectionData() {
   if (!rows) {
-    const response = await fetch("/data/GR21Sprengel.csv");
+    const response = await fetch(
+      `${import.meta.env.BASE_URL}data/GR21Sprengel.csv`,
+    );
 
     if (!response.ok) {
       throw new Error(
