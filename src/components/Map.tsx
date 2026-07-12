@@ -1,19 +1,19 @@
 import { TileLayer, ZoomControl, GeoJSON } from "react-leaflet";
 
 import { Parties } from "../components/Parties";
-import { Parties as PartiesConsts } from "../consts/parties";
 import { useAtomValue } from "jotai";
 import { partyAtom, showMapAtom } from "../atoms/atoms";
 import { ZoomToGeoJSON } from "../components/ZoomToGeoJSON";
 import { getVotesForSprengel } from "../utils/get-votes-for-sprengel";
 import type { Layer } from "leaflet";
 import { Control } from "./Control";
+import type { ElectionFeature } from "../types/features";
 
 type MapProps = { geoData: GeoJSON.GeoJsonObject };
 
 const getFeatureOpacity = (feature: GeoJSON.Feature, selectedParty: string) => {
-  const castVotes = feature.properties.votes["abgegebene Stimmen"];
-  const votes = feature.properties.votes[selectedParty] ?? 0;
+  const castVotes = feature?.properties?.votes["abgegebene Stimmen"];
+  const votes = feature?.properties?.votes[selectedParty] ?? 0;
   if (!castVotes || !votes) return 0;
 
   return votes / castVotes;
@@ -23,7 +23,7 @@ export const Map = ({ geoData }: MapProps) => {
   const party = useAtomValue(partyAtom);
   const showMap = useAtomValue(showMapAtom);
 
-  const handleFeatureClick = (feature: GeoJSONFeature, layer: Layer) => {
+  const handleFeatureClick = (feature: ElectionFeature, layer: Layer) => {
     layer.on({
       click: async () => {
         const {
@@ -57,7 +57,10 @@ export const Map = ({ geoData }: MapProps) => {
         data={geoData}
         style={(feature) => ({
           fillColor: party.color,
-          fillOpacity: getFeatureOpacity(feature, party.identifier),
+          fillOpacity: getFeatureOpacity(
+            feature as ElectionFeature,
+            party.identifier,
+          ),
           color: party.color,
           weight: 2,
         })}

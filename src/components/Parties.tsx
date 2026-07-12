@@ -1,6 +1,9 @@
 import { partyAtom } from "../atoms/atoms";
 import { useAtom } from "jotai";
-import { Parties as PartiesConsts } from "../consts/parties";
+import {
+  Parties as PartiesConsts,
+  type PartyIdentifier,
+} from "../consts/parties";
 
 export const Parties = () => {
   const [party, setParty] = useAtom(partyAtom);
@@ -25,7 +28,8 @@ export const Parties = () => {
         id="party"
         value={party.identifier}
         onChange={(e) => {
-          setParty(PartiesConsts[e.target.value]);
+          const identifier = e.target.value as PartyIdentifier;
+          setParty(PartiesConsts[identifier]);
         }}
       >
         {parties}

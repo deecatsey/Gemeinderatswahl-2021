@@ -1,6 +1,9 @@
 import { parse } from "csv-parse/browser/esm/sync";
+import type { ElectionResultRow } from "../types/features";
 
-export const mergeVotesIntoGeoJson = async (geojson: any) => {
+export const mergeVotesIntoGeoJson = async (
+  geojson: GeoJSON.FeatureCollection,
+) => {
   // Load CSV
   const response = await fetch("/data/GR21Sprengel.csv");
 
@@ -12,7 +15,7 @@ export const mergeVotesIntoGeoJson = async (geojson: any) => {
   const csv = await response.text();
 
   // Parse CSV
-  const records = parse(csv, {
+  const records: ElectionResultRow[] = parse(csv, {
     columns: true,
     delimiter: ";",
     skip_empty_lines: true,
@@ -41,8 +44,8 @@ export const mergeVotesIntoGeoJson = async (geojson: any) => {
   // Merge into GeoJSON
   return {
     ...geojson,
-    features: geojson.features.map((feature: any) => {
-      const sprengel = String(feature.properties.WSPRID).padStart(3, "0");
+    features: geojson.features.map((feature: GeoJSON.Feature) => {
+      const sprengel = String(feature?.properties?.WSPRID).padStart(3, "0");
 
       return {
         ...feature,

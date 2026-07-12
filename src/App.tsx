@@ -16,7 +16,7 @@ export default function App() {
       const response = await fetch("/data/WSPR_2021.json");
       const data = await response.json();
       const voteData = await mergeVotesIntoGeoJson(data);
-      console.log("VOTE DATA", voteData);
+      // console.log("VOTE DATA", voteData);
 
       setRawGeoData(voteData);
     }

@@ -8,3 +8,7 @@ export const Parties = {
   KPÖ: { identifier: "KPÖ", label: "Kpö", color: "#610B1D" },
   WANDL: { identifier: "WANDL", label: "Wandl/Ahoi", color: "#D1AE00" },
 } as const;
+
+export type Party = (typeof Parties)[keyof typeof Parties];
+
+export type PartyIdentifier = keyof typeof Parties;
