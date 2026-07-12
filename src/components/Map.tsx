@@ -16,15 +16,12 @@ const getFeatureOpacity = (feature: GeoJSON.Feature, selectedParty: string) => {
   const votes = feature.properties.votes[selectedParty] ?? 0;
   if (!castVotes || !votes) return 0;
 
-  console.log("???", feature, selectedParty, votes / castVotes);
   return votes / castVotes;
 };
 
 export const Map = ({ geoData }: MapProps) => {
   const party = useAtomValue(partyAtom);
   const showMap = useAtomValue(showMapAtom);
-
-  console.log("CURRENT", party.identifier, PartiesConsts[party.identifier]);
 
   const handleFeatureClick = (feature: GeoJSONFeature, layer: Layer) => {
     layer.on({
@@ -37,7 +34,6 @@ export const Map = ({ geoData }: MapProps) => {
 
         console.log("VOTES get votes", votes);
         if (feature.properties) {
-          console.log("VOTES", feature.properties);
           layer.bindPopup(
             `<pre>${JSON.stringify(feature.properties, null, 2)}</pre>`,
           );

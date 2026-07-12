@@ -6,9 +6,6 @@ import "./App.css";
 import { Map } from "./components/Map";
 import { mergeVotesIntoGeoJson } from "./utils/merge-votes-into-geojson";
 
-const GEOJSON_URL =
-  "https://gist.githubusercontent.com/deecatsey/b48f846370c055ea7e80cbd2ade48999/raw/ddab00862911bb3de57954f00540531b2f39b896/gistfile1.txt";
-
 export default function App() {
   const [rawGeoData, setRawGeoData] = useState<GeoJSON.GeoJsonObject | null>(
     null,
@@ -16,7 +13,7 @@ export default function App() {
 
   useEffect(() => {
     async function loadGeoJSON() {
-      const response = await fetch(GEOJSON_URL);
+      const response = await fetch("/data/WSPR_2021.json");
       const data = await response.json();
       const voteData = await mergeVotesIntoGeoJson(data);
       console.log("VOTE DATA", voteData);
