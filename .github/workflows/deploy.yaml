@@ -46,6 +46,11 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Inspect build output
+        run: |
+          ls -la dist
+          cat dist/index.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3 # v5
         with:
