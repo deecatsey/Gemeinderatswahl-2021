@@ -1,9 +1,9 @@
-import { partyAtom } from "../atoms/atoms";
+import { partyAtom } from "../../atoms/atoms";
 import { useAtom } from "jotai";
 import {
   Parties as PartiesConsts,
   type PartyIdentifier,
-} from "../consts/parties";
+} from "../../consts/parties";
 
 export const Parties = () => {
   const [party, setParty] = useAtom(partyAtom);
@@ -15,14 +15,7 @@ export const Parties = () => {
   ));
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 10,
-        left: 10,
-        zIndex: 1000,
-      }}
-    >
+    <div>
       <label htmlFor="party">Partei: </label>
       <select
         id="party"

@@ -1,8 +1,16 @@
 import { parse } from "csv-parse/browser/esm/sync";
 import type { ElectionResultRow } from "../types/features";
 
+interface Feature {
+  properties: {
+    votes: Record<string, number>;
+  };
+}
+
+type MinMax = Record<string, { min: number; max: number }>;
+
 export const mergeVotesIntoGeoJson = async (
-  geojson: GeoJSON.FeatureCollection,
+  geojsonData: GeoJSON.FeatureCollection,
 ) => {
   // Load CSV
   const response = await fetch(
@@ -30,7 +38,7 @@ export const mergeVotesIntoGeoJson = async (
   const excluded = [
     "Wahl",
     "Wahlsprengel",
-    "Wahlberechtigte",
+    // "Wahlberechtigte",
     // "abgegebene Stimmen",
     // "gültige Stimmen",
   ];
@@ -43,19 +51,33 @@ export const mergeVotesIntoGeoJson = async (
     ) as Record<string, number>;
   }
 
+  const voteData = geojsonData.features.map((feature: GeoJSON.Feature) => {
+    const sprengel = String(feature?.properties?.WSPRID).padStart(3, "0");
+    return {
+      ...feature,
+      properties: {
+        ...feature.properties,
+        votes: voteLookup[sprengel] ?? {},
+      },
+    };
+  });
+
+  const votesRange = voteData.reduce<MinMax>((acc, feature) => {
+    for (const [key, value] of Object.entries(feature.properties.votes)) {
+      if (!acc[key]) {
+        acc[key] = { min: value, max: value };
+      } else {
+        acc[key].min = Math.min(acc[key].min, value);
+        acc[key].max = Math.max(acc[key].max, value);
+      }
+    }
+    return acc;
+  }, {});
+
   // Merge into GeoJSON
   return {
-    ...geojson,
-    features: geojson.features.map((feature: GeoJSON.Feature) => {
-      const sprengel = String(feature?.properties?.WSPRID).padStart(3, "0");
-
-      return {
-        ...feature,
-        properties: {
-          ...feature.properties,
-          votes: voteLookup[sprengel] ?? {},
-        },
-      };
-    }),
+    ...geojsonData,
+    features: voteData,
+    votesRange,
   };
 };

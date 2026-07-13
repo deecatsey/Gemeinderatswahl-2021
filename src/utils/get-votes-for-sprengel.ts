@@ -2,7 +2,8 @@ import { parse } from "csv-parse/browser/esm/sync";
 
 let rows: Record<string, string>[] | undefined;
 
-async function loadElectionData() {
+// TODO: Move this data into APP.tsx
+const loadElectionData = async () => {
   if (!rows) {
     const response = await fetch(
       `${import.meta.env.BASE_URL}data/GR21Sprengel.csv`,
@@ -23,7 +24,7 @@ async function loadElectionData() {
   }
 
   return rows;
-}
+};
 
 export async function getVotesForSprengel(
   wahlsprengel: string,

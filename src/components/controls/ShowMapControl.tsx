@@ -1,18 +1,11 @@
 import { useAtom } from "jotai";
-import { showMapAtom } from "../atoms/atoms";
+import { showMapAtom } from "../../atoms/atoms";
 
-export const Control = () => {
+export const ShowMapControl = () => {
   const [showMap, setShowMap] = useAtom(showMapAtom);
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 100,
-        right: 10,
-        zIndex: 1000,
-      }}
-    >
+    <div>
       <label
         style={{
           display: "flex",

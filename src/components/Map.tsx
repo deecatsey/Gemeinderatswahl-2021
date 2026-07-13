@@ -1,38 +1,30 @@
 import { TileLayer, ZoomControl, GeoJSON } from "react-leaflet";
 
-import { Parties } from "../components/Parties";
+import { Parties } from "./controls/Parties";
 import { useAtomValue } from "jotai";
-import { partyAtom, showMapAtom } from "../atoms/atoms";
+import { partyAtom, relativeVoteAtom, showMapAtom } from "../atoms/atoms";
 import { ZoomToGeoJSON } from "../components/ZoomToGeoJSON";
-import { getVotesForSprengel } from "../utils/get-votes-for-sprengel";
 import type { Layer } from "leaflet";
-import { Control } from "./Control";
 import type { ElectionFeature } from "../types/features";
+import { ControlsContainer } from "./controls/ControlsContainer";
+import { ShowMapControl } from "./controls/ShowMapControl";
+import { RelativeVoteDisplay } from "./controls/RelativeVoteDisplay";
+import {
+  getCastVotesFeatureOpacity,
+  getOwnVotesFeatureOpacity,
+  getPartyRange,
+} from "../utils/feature-opacity";
 
 type MapProps = { geoData: GeoJSON.GeoJsonObject };
-
-const getFeatureOpacity = (feature: GeoJSON.Feature, selectedParty: string) => {
-  const castVotes = feature?.properties?.votes["abgegebene Stimmen"];
-  const votes = feature?.properties?.votes[selectedParty] ?? 0;
-  if (!castVotes || !votes) return 0;
-
-  return votes / castVotes;
-};
 
 export const Map = ({ geoData }: MapProps) => {
   const party = useAtomValue(partyAtom);
   const showMap = useAtomValue(showMapAtom);
+  const relativeVoteDisplayType = useAtomValue(relativeVoteAtom);
 
   const handleFeatureClick = (feature: ElectionFeature, layer: Layer) => {
     layer.on({
       click: async () => {
-        const {
-          properties: { WSPRID },
-        } = feature;
-        console.log("Clicked feature:", feature);
-        const votes = await getVotesForSprengel(WSPRID, party.identifier);
-
-        console.log("VOTES get votes", votes);
         if (feature.properties) {
           layer.bindPopup(
             `<pre>${JSON.stringify(feature.properties, null, 2)}</pre>`,
@@ -55,19 +47,38 @@ export const Map = ({ geoData }: MapProps) => {
       <ZoomToGeoJSON data={geoData} />
       <GeoJSON
         data={geoData}
-        style={(feature) => ({
-          fillColor: party.color,
-          fillOpacity: getFeatureOpacity(
-            feature as ElectionFeature,
-            party.identifier,
-          ),
-          color: party.color,
-          weight: 2,
-        })}
+        style={(feature) => {
+          let fillOpacity;
+          if (relativeVoteDisplayType === "castVotes") {
+            fillOpacity = getCastVotesFeatureOpacity(
+              feature as ElectionFeature,
+              party.identifier,
+            );
+          } else {
+            const range = getPartyRange(party.identifier, geoData);
+            fillOpacity = getOwnVotesFeatureOpacity(
+              feature as ElectionFeature,
+              party.identifier,
+              range,
+            );
+          }
+
+          return {
+            fillColor: party.color,
+            fillOpacity,
+            color: party.color,
+            weight: 2,
+          };
+        }}
         onEachFeature={handleFeatureClick}
       />
-      <Parties />
-      <Control />
+      <ControlsContainer anchor={{ top: 10, left: 10 }}>
+        <Parties />
+      </ControlsContainer>
+      <ControlsContainer anchor={{ top: 100, right: 10 }}>
+        <ShowMapControl />
+        <RelativeVoteDisplay />
+      </ControlsContainer>
     </>
   );
 };
