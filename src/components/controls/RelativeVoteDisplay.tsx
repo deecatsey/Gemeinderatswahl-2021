@@ -10,10 +10,9 @@ export const RelativeVoteDisplay = () => {
     useAtom(relativeVoteAtom);
 
   const inputs = relativeVoteDisplayTypes.map((voteDisplayType) => (
-    <div>
+    <div key={voteDisplayType}>
       <input
         type="radio"
-        key={voteDisplayType}
         id={voteDisplayType}
         name={voteDisplayType}
         value={voteDisplayType}

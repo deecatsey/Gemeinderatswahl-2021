@@ -1,3 +1,5 @@
+import type { MinMax } from "./controls";
+
 export type ElectionFeature = GeoJSON.Feature & {
   properties: { WSPRID: string };
 };
@@ -19,4 +21,8 @@ export type ElectionResultRow = {
   WANDL: number;
   MFG: number;
   R: number;
+};
+
+export type GeoJsonElectionData = GeoJSON.FeatureCollection & {
+  votesRange: MinMax;
 };

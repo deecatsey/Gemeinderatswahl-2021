@@ -5,9 +5,10 @@ import "leaflet/dist/leaflet.css";
 import "./App.css";
 import { Map } from "./components/Map";
 import { mergeVotesIntoGeoJson } from "./utils/merge-votes-into-geojson";
+import type { GeoJsonElectionData } from "./types/features";
 
 export default function App() {
-  const [rawGeoData, setRawGeoData] = useState<GeoJSON.GeoJsonObject | null>(
+  const [rawGeoData, setRawGeoData] = useState<GeoJsonElectionData | null>(
     null,
   );
 

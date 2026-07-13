@@ -1,17 +1,10 @@
 import { parse } from "csv-parse/browser/esm/sync";
-import type { ElectionResultRow } from "../types/features";
-
-interface Feature {
-  properties: {
-    votes: Record<string, number>;
-  };
-}
-
-type MinMax = Record<string, { min: number; max: number }>;
+import type { ElectionResultRow, GeoJsonElectionData } from "../types/features";
+import type { MinMax } from "../types/controls";
 
 export const mergeVotesIntoGeoJson = async (
   geojsonData: GeoJSON.FeatureCollection,
-) => {
+): Promise<GeoJsonElectionData> => {
   // Load CSV
   const response = await fetch(
     `${import.meta.env.BASE_URL}data/GR21Sprengel.csv`,
@@ -73,6 +66,8 @@ export const mergeVotesIntoGeoJson = async (
     }
     return acc;
   }, {});
+
+  console.log("This is votes range", votesRange);
 
   // Merge into GeoJSON
   return {

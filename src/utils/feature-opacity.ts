@@ -1,4 +1,5 @@
-import type { Party, PartyIdentifier } from "../consts/parties";
+import type { PartyIdentifier } from "../consts/parties";
+import type { GeoJsonElectionData } from "../types/features";
 
 const normalizeValue = (value: number, min: number, max: number): number => {
   if (min === max) {
@@ -7,26 +8,30 @@ const normalizeValue = (value: number, min: number, max: number): number => {
   return (value - min) / (max - min);
 };
 
-export const getPartyRange = (party: PartyIdentifier, geoJsonData) => {
+export const getPartyRange = (
+  party: PartyIdentifier,
+  geoJsonData: GeoJsonElectionData,
+) => {
   const { votesRange } = geoJsonData;
   return votesRange[party];
 };
 
 export const getOwnVotesFeatureOpacity = (
   feature: GeoJSON.Feature,
-  selectedParty: Party,
+  selectedParty: PartyIdentifier,
   range: { min: number; max: number },
 ) => {
   const votes = feature?.properties?.votes[selectedParty];
   if (!votes) return 0;
   const { min, max } = range;
+  console.log("range", range);
 
   return normalizeValue(votes, min, max);
 };
 
 export const getCastVotesFeatureOpacity = (
   feature: GeoJSON.Feature,
-  selectedParty: Party,
+  selectedParty: PartyIdentifier,
 ) => {
   const castVotes = feature?.properties?.votes["abgegebene Stimmen"];
   const votes = feature?.properties?.votes[selectedParty] ?? 0;

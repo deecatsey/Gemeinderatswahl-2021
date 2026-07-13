@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 import { partyAtom, relativeVoteAtom, showMapAtom } from "../atoms/atoms";
 import { ZoomToGeoJSON } from "../components/ZoomToGeoJSON";
 import type { Layer } from "leaflet";
-import type { ElectionFeature } from "../types/features";
+import type { ElectionFeature, GeoJsonElectionData } from "../types/features";
 import { ControlsContainer } from "./controls/ControlsContainer";
 import { ShowMapControl } from "./controls/ShowMapControl";
 import { RelativeVoteDisplay } from "./controls/RelativeVoteDisplay";
@@ -15,7 +15,7 @@ import {
   getPartyRange,
 } from "../utils/feature-opacity";
 
-type MapProps = { geoData: GeoJSON.GeoJsonObject };
+type MapProps = { geoData: GeoJsonElectionData };
 
 export const Map = ({ geoData }: MapProps) => {
   const party = useAtomValue(partyAtom);
