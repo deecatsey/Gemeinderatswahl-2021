@@ -12,7 +12,6 @@ import { RelativeVoteDisplay } from "./controls/RelativeVoteDisplay";
 import {
   getCastVotesFeatureOpacity,
   getOwnVotesFeatureOpacity,
-  getPartyRange,
 } from "../utils/feature-opacity";
 
 type MapProps = { geoData: GeoJsonElectionData };
@@ -21,6 +20,8 @@ export const Map = ({ geoData }: MapProps) => {
   const party = useAtomValue(partyAtom);
   const showMap = useAtomValue(showMapAtom);
   const relativeVoteDisplayType = useAtomValue(relativeVoteAtom);
+
+  console.log("GEOJSON", geoData);
 
   const handleFeatureClick = (feature: ElectionFeature, layer: Layer) => {
     layer.on({
@@ -55,11 +56,10 @@ export const Map = ({ geoData }: MapProps) => {
               party.identifier,
             );
           } else {
-            const range = getPartyRange(party.identifier, geoData);
             fillOpacity = getOwnVotesFeatureOpacity(
               feature as ElectionFeature,
               party.identifier,
-              range,
+              geoData,
             );
           }
 
