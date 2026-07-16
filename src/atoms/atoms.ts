@@ -6,4 +6,4 @@ export const partyAtom = atom<Party>(Parties.LINZ);
 
 export const showMapAtom = atom(true);
 
-export const relativeVoteAtom = atom<RelativeVoteDisplayType>("castVotes");
+export const relativeVoteAtom = atom<RelativeVoteDisplayType>("alle");

@@ -50,7 +50,7 @@ export const Map = ({ geoData }: MapProps) => {
         data={geoData}
         style={(feature) => {
           let fillOpacity;
-          if (relativeVoteDisplayType === "castVotes") {
+          if (relativeVoteDisplayType === "alle") {
             fillOpacity = getCastVotesFeatureOpacity(
               feature as ElectionFeature,
               party.identifier,
@@ -78,6 +78,7 @@ export const Map = ({ geoData }: MapProps) => {
       <ControlsContainer anchor={{ top: 100, right: 10 }}>
         <ShowMapControl />
         <RelativeVoteDisplay />
+        {/* <BackgroundColorPicker /> */}
       </ControlsContainer>
     </>
   );

@@ -35,7 +35,7 @@ export const RelativeVoteDisplay = () => {
         gap: 0,
       }}
     >
-      <label>Proportional to</label>
+      <label>Stimmenanzahl relativ zu:</label>
       <div style={{ display: "flex", flexDirection: "row", gap: "0.5em" }}>
         {inputs}
       </div>

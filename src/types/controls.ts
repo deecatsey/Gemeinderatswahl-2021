@@ -1,4 +1,4 @@
-export const relativeVoteDisplayTypes = ["castVotes", "ownVotes"] as const;
+export const relativeVoteDisplayTypes = ["alle", "eigene"] as const;
 
 export type RelativeVoteDisplayType = (typeof relativeVoteDisplayTypes)[number];
 

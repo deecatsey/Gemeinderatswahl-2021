@@ -30,7 +30,6 @@ export const getPartyRange = (
 const getNoneVoterVotes = (feature: GeoJSON.Feature) => {
   const eligibleVotes = feature?.properties?.votes["Wahlberechtigte"] ?? 0;
   const validVotes = feature?.properties?.votes["gültige Stimmen"] ?? 0;
-  console.log("NON VOTERS", eligibleVotes - validVotes);
   return eligibleVotes - validVotes;
 };
 

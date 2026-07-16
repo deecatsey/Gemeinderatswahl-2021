@@ -18,7 +18,7 @@ export const ShowMapControl = () => {
           checked={showMap}
           onChange={(e) => setShowMap(e.target.checked)}
         />
-        Show map
+        Karte anzeigen
       </label>
     </div>
   );
