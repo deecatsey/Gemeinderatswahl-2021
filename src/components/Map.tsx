@@ -1,10 +1,10 @@
-import { TileLayer, ZoomControl, GeoJSON } from "react-leaflet";
+import { TileLayer, ZoomControl, GeoJSON, Popup } from "react-leaflet";
 
 import { Parties } from "./controls/Parties";
 import { useAtomValue } from "jotai";
 import { partyAtom, relativeVoteAtom, showMapAtom } from "../atoms/atoms";
 import { ZoomToGeoJSON } from "../components/ZoomToGeoJSON";
-import type { Layer } from "leaflet";
+import { featureGroup, type Layer } from "leaflet";
 import type { ElectionFeature, GeoJsonElectionData } from "../types/features";
 import { ControlsContainer } from "./controls/ControlsContainer";
 import { ShowMapControl } from "./controls/ShowMapControl";
@@ -13,27 +13,47 @@ import {
   getCastVotesFeatureOpacity,
   getOwnVotesFeatureOpacity,
 } from "../utils/feature-opacity";
+import { useState } from "react";
+import { VotesChart } from "./chart/VotesChart";
 
 type MapProps = { geoData: GeoJsonElectionData };
 
 export const Map = ({ geoData }: MapProps) => {
   const party = useAtomValue(partyAtom);
   const showMap = useAtomValue(showMapAtom);
+  const [selectedFeature, setSelectedFeature] =
+    useState<ElectionFeature | null>(null);
   const relativeVoteDisplayType = useAtomValue(relativeVoteAtom);
 
   console.log("GEOJSON", geoData);
 
-  const handleFeatureClick = (feature: ElectionFeature, layer: Layer) => {
+  const handleFeatureClick = (feature, layer) => {
     layer.on({
-      click: async () => {
-        if (feature.properties) {
-          layer.bindPopup(
-            `<pre>${JSON.stringify(feature.properties, null, 2)}</pre>`,
-          );
-        }
+      click: (e) => {
+        setSelectedFeature({
+          feature,
+          position: e.latlng,
+        });
       },
     });
   };
+
+  // const handleFeatureClick = (feature: ElectionFeature, layer: Layer) => {
+  //   layer.on({
+  //     click: async () => {
+  //       if (feature.properties) {
+  //         // layer.bindPopup(
+  //         //   `<pre>${JSON.stringify(feature.properties, null, 2)}</pre>`,
+  //         // );
+  //         console.log(feature.properties, "DATA");
+  //         const {
+  //           properties: { votes },
+  //         } = feature;
+  //         layer.bindPopup(`<VotesChart data={votes}/>`);
+  //       }
+  //     },
+  //   });
+  // };
 
   return (
     <>
@@ -80,6 +100,17 @@ export const Map = ({ geoData }: MapProps) => {
         <RelativeVoteDisplay />
         {/* <BackgroundColorPicker /> */}
       </ControlsContainer>
+      {selectedFeature && (
+        <Popup
+          minWidth={300} // TODO: adjust
+          position={selectedFeature.position}
+          eventHandlers={{
+            remove: () => setSelectedFeature(null),
+          }}
+        >
+          <VotesChart feature={selectedFeature} />
+        </Popup>
+      )}
     </>
   );
 };
